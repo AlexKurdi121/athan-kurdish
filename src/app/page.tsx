@@ -325,11 +325,9 @@ export default function Home() {
           {/* Today's prayer times with beautiful cards */}
           {viewMode === "today" && today && (
             <div className="prayers-section">
-              
-              
               <div className="prayer-grid">
-                {/* First row - 3 prayers */}
-                <div className="grid-row">
+                {/* First row - 3 prayers on desktop, stack on mobile */}
+                <div className="grid-row row-1">
                   {["bayani", "xorhalatn", "niwaro"].map((key) => {
                     const time = today[key as keyof PrayerTime];
                     if (!time) return null;
@@ -358,8 +356,8 @@ export default function Home() {
                   })}
                 </div>
                 
-                {/* Second row - 3 prayers */}
-                <div className="grid-row">
+                {/* Second row - 3 prayers on desktop, stack on mobile */}
+                <div className="grid-row row-2">
                   {["asr", "eywara", "esha"].map((key) => {
                     const time = today[key as keyof PrayerTime];
                     if (!time) return null;
@@ -441,45 +439,53 @@ export default function Home() {
             )}
           </div>
 
-          {/* Month View with elegant table */}
+          {/* Month View with responsive card layout for mobile */}
           {viewMode === "month" && (
             <div className="table-section">
               <div className="table-header">
                 <span className="header-icon">📊</span>
                 <h3 className="table-title">{getViewTitle()}</h3>
               </div>
-              <div className="table-container">
-                <table className="elegant-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>{t.prayers.bayani}</th>
-                      <th>{t.prayers.xorhalatn}</th>
-                      <th>{t.prayers.niwaro}</th>
-                      <th>{t.prayers.asr}</th>
-                      <th>{t.prayers.eywara}</th>
-                      <th>{t.prayers.esha}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {monthData.map((item, index) => (
-                      <tr key={index} className={item.date === today?.date ? "today-row" : ""}>
-                        <td className="date-cell">{formatDate(item.date)}</td>
-                        <td>{convertTo12Hour(item.bayani, lang)}</td>
-                        <td>{convertTo12Hour(item.xorhalatn, lang)}</td>
-                        <td>{convertTo12Hour(item.niwaro, lang)}</td>
-                        <td>{convertTo12Hour(item.asr, lang)}</td>
-                        <td>{convertTo12Hour(item.eywara, lang)}</td>
-                        <td>{convertTo12Hour(item.esha, lang)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="month-cards">
+                {monthData.map((item, index) => (
+                  <div key={index} className={`month-card ${item.date === today?.date ? "today-card" : ""}`}>
+                    <div className="month-card-header">
+                      <span className="month-date">{formatDate(item.date)}</span>
+                      {item.date === today?.date && <span className="today-badge">{t.today}</span>}
+                    </div>
+                    <div className="month-card-prayers">
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.bayani}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.bayani, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.xorhalatn}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.xorhalatn, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.niwaro}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.niwaro, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.asr}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.asr, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.eywara}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.eywara, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.esha}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.esha, lang)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Ramadan Dates View with special styling */}
+          {/* Ramadan Dates View with responsive card layout for mobile */}
           {viewMode === "ramadan" && inRamadan && (
             <div className="table-section ramadan-section">
               <div className="table-header ramadan-header">
@@ -491,33 +497,41 @@ export default function Home() {
                   {lang === "ku" ? "١٨ شوبات - ١٩ ئازار" : "18 February - 19 March"}
                 </span>
               </div>
-              <div className="table-container">
-                <table className="elegant-table ramadan-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>{t.prayers.bayani}</th>
-                      <th>{t.prayers.xorhalatn}</th>
-                      <th>{t.prayers.niwaro}</th>
-                      <th>{t.prayers.asr}</th>
-                      <th>{t.prayers.eywara}</th>
-                      <th>{t.prayers.esha}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ramadanData.map((item, index) => (
-                      <tr key={index} className="ramadan-row">
-                        <td className="date-cell ramadan-date">{formatDate(item.date)}</td>
-                        <td>{convertTo12Hour(item.bayani, lang)}</td>
-                        <td>{convertTo12Hour(item.xorhalatn, lang)}</td>
-                        <td>{convertTo12Hour(item.niwaro, lang)}</td>
-                        <td>{convertTo12Hour(item.asr, lang)}</td>
-                        <td>{convertTo12Hour(item.eywara, lang)}</td>
-                        <td>{convertTo12Hour(item.esha, lang)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="month-cards">
+                {ramadanData.map((item, index) => (
+                  <div key={index} className="month-card ramadan-card">
+                    <div className="month-card-header ramadan-header-bg">
+                      <span className="month-date ramadan-date-text">{formatDate(item.date)}</span>
+                      <span className="ramadan-icon-small">🌙</span>
+                    </div>
+                    <div className="month-card-prayers">
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.bayani}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.bayani, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.xorhalatn}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.xorhalatn, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.niwaro}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.niwaro, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.asr}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.asr, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.eywara}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.eywara, lang)}</span>
+                      </div>
+                      <div className="prayer-row">
+                        <span className="prayer-label">{t.prayers.esha}:</span>
+                        <span className="prayer-value">{convertTo12Hour(item.esha, lang)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -541,8 +555,8 @@ export default function Home() {
           min-height: 100vh;
           background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2f 50%, #2a2f3f 100%);
           position: relative;
-          overflow: hidden;
-          padding: 20px;
+          overflow-x: hidden;
+          padding: 10px;
         }
 
         /* Animated gradient background */
@@ -612,8 +626,8 @@ export default function Home() {
         .glass-card {
           background: rgba(255, 255, 255, 0.05);
           backdrop-filter: blur(10px);
-          border-radius: 40px;
-          padding: 30px;
+          border-radius: 30px;
+          padding: 20px;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
                       inset 0 1px 1px rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.1);
@@ -622,9 +636,9 @@ export default function Home() {
         /* Header gradient */
         .header-gradient {
           background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(247, 37, 133, 0.2));
-          border-radius: 30px;
-          padding: 25px;
-          margin-bottom: 30px;
+          border-radius: 25px;
+          padding: 20px;
+          margin-bottom: 20px;
           position: relative;
           overflow: hidden;
         }
@@ -644,37 +658,39 @@ export default function Home() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 20px;
+          margin-bottom: 15px;
           position: relative;
           z-index: 2;
+          flex-wrap: wrap;
+          gap: 10px;
         }
 
         .title {
-          font-size: 2.2rem;
+          font-size: 1.5rem;
           font-weight: 600;
           background: linear-gradient(135deg, #fff, #e0e0ff);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
         }
 
         .title-icon {
-          font-size: 2.5rem;
+          font-size: 1.8rem;
         }
 
         .lang-btn {
           background: rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 50px;
-          padding: 10px 20px;
+          border-radius: 40px;
+          padding: 8px 16px;
           color: white;
-          font-size: 1rem;
+          font-size: 0.9rem;
           cursor: pointer;
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           transition: all 0.3s ease;
           backdrop-filter: blur(5px);
         }
@@ -686,7 +702,7 @@ export default function Home() {
         }
 
         .lang-icon {
-          font-size: 1.2rem;
+          font-size: 1rem;
         }
 
         .lang-text {
@@ -696,11 +712,11 @@ export default function Home() {
         /* DateTime container */
         .datetime-container {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
+          flex-direction: column;
+          gap: 10px;
           background: rgba(0, 0, 0, 0.3);
-          border-radius: 60px;
-          padding: 15px 25px;
+          border-radius: 30px;
+          padding: 15px;
           position: relative;
           z-index: 2;
           border: 1px solid rgba(255, 255, 255, 0.1);
@@ -710,75 +726,59 @@ export default function Home() {
           display: flex;
           align-items: center;
           gap: 10px;
+          justify-content: center;
         }
 
         .time-icon, .date-icon {
-          font-size: 1.5rem;
+          font-size: 1.3rem;
           filter: drop-shadow(0 0 10px rgba(76, 201, 240, 0.5));
         }
 
         .time-display {
-          font-size: 2rem;
+          font-size: 1.5rem;
           font-weight: 600;
           background: linear-gradient(135deg, #4cc9f0, #f72585);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          letter-spacing: 2px;
+          letter-spacing: 1px;
         }
 
         .date-display {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           color: rgba(255, 255, 255, 0.9);
         }
 
         /* Prayers section */
         .prayers-section {
-          margin-bottom: 40px;
-        }
-
-        .section-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: linear-gradient(135deg, #4cc9f0, #f72585);
-          padding: 8px 20px;
-          border-radius: 50px;
-          margin-bottom: 25px;
-          color: white;
-          font-weight: 500;
-          box-shadow: 0 10px 20px rgba(247, 37, 133, 0.3);
-        }
-
-        .badge-icon {
-          font-size: 1.2rem;
+          margin-bottom: 30px;
         }
 
         /* Prayer grid */
         .prayer-grid {
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          margin-bottom: 30px;
+          gap: 15px;
+          margin-bottom: 20px;
         }
 
         .grid-row {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
+          gap: 12px;
         }
 
         .prayer-card {
           position: relative;
-          border-radius: 30px;
-          padding: 20px;
+          border-radius: 20px;
+          padding: 15px 10px;
           overflow: hidden;
           transition: all 0.3s ease;
           cursor: pointer;
         }
 
         .prayer-card:hover {
-          transform: translateY(-10px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+          transform: translateY(-5px) scale(1.02);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
 
         .card-content {
@@ -813,24 +813,24 @@ export default function Home() {
         .isha-gradient { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
 
         .prayer-time {
-          font-size: 2rem;
+          font-size: 1.3rem;
           font-weight: 700;
           color: white;
-          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-          margin-bottom: 10px;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          margin-bottom: 5px;
         }
 
         .prayer-icon-wrapper {
-          margin: 15px 0;
+          margin: 8px 0;
         }
 
         .prayer-icon {
-          font-size: 3rem;
-          filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+          font-size: 2rem;
+          filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
         }
 
         .prayer-name {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.9);
           font-weight: 500;
         }
@@ -839,9 +839,9 @@ export default function Home() {
         .countdown-container {
           position: relative;
           background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(247, 37, 133, 0.2));
-          border-radius: 40px;
-          padding: 30px;
-          margin-top: 20px;
+          border-radius: 25px;
+          padding: 20px;
+          margin-top: 15px;
           overflow: hidden;
           border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -866,73 +866,76 @@ export default function Home() {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          margin-bottom: 15px;
+          gap: 8px;
+          margin-bottom: 10px;
         }
 
         .countdown-bell {
-          font-size: 1.8rem;
+          font-size: 1.5rem;
           animation: ring 2s infinite;
         }
 
         .countdown-label {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           color: white;
           font-weight: 500;
         }
 
         .next-prayer-name {
-          font-size: 2.5rem;
+          font-size: 1.8rem;
           font-weight: 700;
           background: linear-gradient(135deg, #fff, #4cc9f0);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          margin-bottom: 20px;
+          margin-bottom: 15px;
           text-transform: uppercase;
         }
 
         .countdown-timer {
-          margin: 20px 0;
+          margin: 15px 0;
         }
 
         .timer-digits {
-          font-size: 3.5rem;
+          font-size: 2.2rem;
           font-weight: 700;
           color: white;
-          text-shadow: 0 0 20px rgba(76, 201, 240, 0.5);
-          letter-spacing: 5px;
+          text-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+          letter-spacing: 3px;
         }
 
         .countdown-subtitle {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: rgba(255, 255, 255, 0.7);
         }
 
         /* Navigation buttons */
         .nav-buttons {
           display: flex;
-          gap: 15px;
-          margin-bottom: 30px;
+          gap: 10px;
+          margin-bottom: 20px;
           flex-wrap: wrap;
           justify-content: center;
         }
 
         .nav-btn {
           position: relative;
-          padding: 15px 30px;
+          padding: 12px 20px;
           border: none;
-          border-radius: 60px;
-          font-size: 1.1rem;
+          border-radius: 40px;
+          font-size: 0.95rem;
           font-weight: 600;
           color: white;
           cursor: pointer;
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           overflow: hidden;
           transition: all 0.3s ease;
           background: rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
+          flex: 1;
+          min-width: 100px;
+          justify-content: center;
         }
 
         .btn-glow {
@@ -951,7 +954,7 @@ export default function Home() {
 
         .nav-btn.active {
           background: linear-gradient(135deg, #4cc9f0, #f72585);
-          box-shadow: 0 10px 30px rgba(247, 37, 133, 0.4);
+          box-shadow: 0 8px 20px rgba(247, 37, 133, 0.4);
           border: none;
         }
 
@@ -960,7 +963,7 @@ export default function Home() {
         .ramadan-btn.active { background: linear-gradient(135deg, #ffd166, #fca311); }
 
         .btn-icon {
-          font-size: 1.3rem;
+          font-size: 1.1rem;
           position: relative;
           z-index: 2;
         }
@@ -968,14 +971,15 @@ export default function Home() {
         .btn-text {
           position: relative;
           z-index: 2;
+          font-size: 0.9rem;
         }
 
-        /* Table section */
+        /* Table section - replaced with cards for mobile */
         .table-section {
           background: rgba(0, 0, 0, 0.3);
-          border-radius: 30px;
-          padding: 25px;
-          margin-top: 20px;
+          border-radius: 25px;
+          padding: 20px;
+          margin-top: 15px;
           border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -986,8 +990,8 @@ export default function Home() {
         .table-header {
           display: flex;
           align-items: center;
-          gap: 10px;
-          margin-bottom: 20px;
+          gap: 8px;
+          margin-bottom: 15px;
         }
 
         .ramadan-header {
@@ -995,11 +999,11 @@ export default function Home() {
         }
 
         .header-icon {
-          font-size: 2rem;
+          font-size: 1.5rem;
         }
 
         .table-title {
-          font-size: 1.8rem;
+          font-size: 1.3rem;
           font-weight: 600;
           color: white;
           margin: 0;
@@ -1008,97 +1012,142 @@ export default function Home() {
         .ramadan-badge {
           display: inline-block;
           background: linear-gradient(135deg, #ffd166, #fca311);
-          padding: 8px 25px;
-          border-radius: 50px;
-          margin-bottom: 20px;
+          padding: 6px 15px;
+          border-radius: 40px;
+          margin-bottom: 15px;
         }
 
         .badge-content {
           color: #1a1f2f;
           font-weight: 600;
-          font-size: 1.1rem;
+          font-size: 0.95rem;
         }
 
-        .table-container {
-          overflow-x: auto;
-          border-radius: 20px;
-          background: rgba(0, 0, 0, 0.2);
+        /* Month cards - responsive design for mobile */
+        .month-cards {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          max-height: 500px;
+          overflow-y: auto;
+          padding-right: 5px;
         }
 
-        .elegant-table {
-          width: 100%;
-          border-collapse: collapse;
-          color: white;
+        .month-cards::-webkit-scrollbar {
+          width: 4px;
         }
 
-        .elegant-table th {
+        .month-cards::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+
+        .month-cards::-webkit-scrollbar-thumb {
           background: linear-gradient(135deg, #4cc9f0, #f72585);
+          border-radius: 10px;
+        }
+
+        .month-card {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 20px;
           padding: 15px;
-          font-weight: 600;
-          font-size: 1rem;
-          white-space: nowrap;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.3s ease;
         }
 
-        .elegant-table th:first-child {
-          border-top-left-radius: 15px;
+        .month-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+          background: rgba(255, 255, 255, 0.08);
         }
 
-        .elegant-table th:last-child {
-          border-top-right-radius: 15px;
-        }
-
-        .elegant-table td {
-          padding: 12px 15px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          text-align: center;
-        }
-
-        .elegant-table tr:hover td {
-          background: rgba(255, 255, 255, 0.1);
-        }
-
-        .today-row {
-          background: rgba(76, 201, 240, 0.2);
+        .today-card {
+          background: rgba(76, 201, 240, 0.15);
           border-left: 4px solid #4cc9f0;
         }
 
-        .ramadan-row {
+        .ramadan-card {
           background: rgba(255, 209, 102, 0.1);
         }
 
-        .ramadan-row:hover {
-          background: rgba(255, 209, 102, 0.2);
+        .month-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .ramadan-date {
-          color: #ffd166;
-          font-weight: 600;
+        .ramadan-header-bg {
+          border-bottom: 1px solid rgba(255, 209, 102, 0.3);
         }
 
-        .date-cell {
+        .month-date {
+          font-size: 1.1rem;
           font-weight: 600;
           color: #4cc9f0;
         }
 
+        .ramadan-date-text {
+          color: #ffd166;
+        }
+
+        .today-badge {
+          background: #4cc9f0;
+          color: white;
+          padding: 3px 8px;
+          border-radius: 20px;
+          font-size: 0.7rem;
+          font-weight: 600;
+        }
+
+        .ramadan-icon-small {
+          font-size: 1.1rem;
+        }
+
+        .month-card-prayers {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .prayer-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.95rem;
+        }
+
+        .prayer-label {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .prayer-value {
+          color: white;
+          font-weight: 500;
+        }
+
         /* Footer decoration */
         .footer-decoration {
-          margin-top: 40px;
+          margin-top: 30px;
           text-align: center;
         }
 
         .decoration-line {
-          height: 2px;
+          height: 1px;
           background: linear-gradient(90deg, transparent, #4cc9f0, #f72585, transparent);
-          margin-bottom: 20px;
+          margin-bottom: 15px;
         }
 
         .decoration-text {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 15px;
+          gap: 10px;
           color: rgba(255, 255, 255, 0.6);
-          font-size: 1.1rem;
+          font-size: 0.95rem;
+          flex-wrap: wrap;
         }
 
         /* Animations */
@@ -1142,10 +1191,6 @@ export default function Home() {
           flex-direction: row-reverse;
         }
 
-        [dir="rtl"] .datetime-container {
-          flex-direction: row-reverse;
-        }
-
         [dir="rtl"] .nav-buttons {
           flex-direction: row-reverse;
         }
@@ -1154,76 +1199,146 @@ export default function Home() {
           flex-direction: row-reverse;
         }
 
-        /* Responsive design */
-        @media (max-width: 768px) {
-          .glass-card {
+        [dir="rtl"] .prayer-row {
+          flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .month-card-header {
+          flex-direction: row-reverse;
+        }
+
+        /* Tablet and desktop styles */
+        @media (min-width: 769px) {
+          .container {
             padding: 20px;
           }
 
+          .glass-card {
+            padding: 30px;
+          }
+
+          .header-gradient {
+            padding: 25px;
+          }
+
           .title {
-            font-size: 1.5rem;
-          }
-
-          .datetime-container {
-            flex-direction: column;
-            gap: 15px;
-            border-radius: 30px;
-          }
-
-          .time-display {
-            font-size: 1.5rem;
-          }
-
-          .date-display {
-            font-size: 1.2rem;
-          }
-
-          .grid-row {
-            grid-template-columns: 1fr;
-            gap: 15px;
-          }
-
-          .prayer-time {
-            font-size: 1.5rem;
-          }
-
-          .prayer-icon {
             font-size: 2rem;
           }
 
+          .datetime-container {
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 15px 25px;
+          }
+
+          .time-display {
+            font-size: 2rem;
+          }
+
+          .date-display {
+            font-size: 1.5rem;
+          }
+
+          .grid-row {
+            gap: 20px;
+          }
+
+          .prayer-time {
+            font-size: 2rem;
+          }
+
+          .prayer-icon {
+            font-size: 3rem;
+          }
+
           .prayer-name {
-            font-size: 1rem;
-          }
-
-          .nav-buttons {
-            flex-direction: column;
-          }
-
-          .nav-btn {
-            width: 100%;
-            justify-content: center;
-          }
-
-          .countdown-label {
             font-size: 1.2rem;
           }
 
-          .next-prayer-name {
-            font-size: 1.8rem;
+          .countdown-label {
+            font-size: 1.5rem;
           }
 
-          .timer-digits {
+          .next-prayer-name {
             font-size: 2.5rem;
           }
 
-          .table-title {
-            font-size: 1.4rem;
+          .timer-digits {
+            font-size: 3.5rem;
           }
 
-          .elegant-table th,
-          .elegant-table td {
-            padding: 8px;
+          .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            flex: none;
+          }
+
+          .btn-text {
+            font-size: 1.1rem;
+          }
+
+          .month-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-height: none;
+            overflow-y: visible;
+          }
+
+          .month-card {
+            padding: 20px;
+          }
+
+          .month-date {
+            font-size: 1.2rem;
+          }
+
+          .prayer-row {
+            font-size: 1rem;
+          }
+
+          .decoration-text {
+            font-size: 1.1rem;
+          }
+        }
+
+        /* iPhone specific styles */
+        @media (max-width: 390px) {
+          .grid-row {
+            gap: 8px;
+          }
+
+          .prayer-card {
+            padding: 12px 5px;
+          }
+
+          .prayer-time {
+            font-size: 1.1rem;
+          }
+
+          .prayer-icon {
+            font-size: 1.8rem;
+          }
+
+          .prayer-name {
             font-size: 0.9rem;
+          }
+
+          .nav-btn {
+            padding: 10px 12px;
+            min-width: 80px;
+          }
+
+          .btn-icon {
+            font-size: 1rem;
+          }
+
+          .btn-text {
+            font-size: 0.8rem;
+          }
+
+          .timer-digits {
+            font-size: 1.8rem;
           }
         }
       `}</style>
